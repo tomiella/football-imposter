@@ -12,9 +12,18 @@ interface InGameProps {
 }
 
 export default function InGame({ disabled, players, state }: InGameProps) {
-  if (disabled) return false;
-
   const [status, setStatus]: [string[], any] = useState([]);
+  useEffect(() => {
+    if (!socket.connected) socket.connect();
+    socket.on("packet", (data) => {
+      switch (data.cmd) {
+        case "picking-status":
+          setStatus(data.data);
+          break;
+      }
+    });
+  }, []);
+  if (disabled) return false;
 
   let list: any = [];
   players
@@ -30,17 +39,6 @@ export default function InGame({ disabled, players, state }: InGameProps) {
       }
     });
   list.pop();
-
-  useEffect(() => {
-    if (!socket.connected) socket.connect();
-    socket.on("packet", (data) => {
-      switch (data.cmd) {
-        case "picking-status":
-          setStatus(data.data);
-          break;
-      }
-    });
-  }, []);
 
   return (
     <div className="grid grid-flow-row gap-10">
