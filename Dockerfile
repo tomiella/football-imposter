@@ -1,17 +1,24 @@
-FROM node:10-alpine
+# Use an official Node.js runtime as a base image with version >= v18.17.0
+FROM node:18.17.0-alpine
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+# Set the working directory inside the container
+WORKDIR /usr/src/app
 
-WORKDIR /home/node/app
-
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-USER node
-
+# Install dependencies
 RUN npm install
 
-COPY --chown=node:node . .
+# Copy the rest of the application code to the working directory
+COPY . .
 
+# Build the Next.js app
+RUN npm run build
+
+# Expose the port that the app will run on
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+# Define the command to run your application
+CMD ["npm", "start"]
+
