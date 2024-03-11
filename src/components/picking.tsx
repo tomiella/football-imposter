@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import debounce from "lodash.debounce";
+import debounce from "lodash/debounce";
 import { socket } from "@/lib/socket";
 import Papa from "papaparse";
 
@@ -11,7 +11,6 @@ interface PickingProps {
 }
 
 export default function Picking({ disabled }: PickingProps) {
-  if (disabled) return false;
   const [fplayer, setFPlayer]: [any, any] = useState(null);
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState("");
@@ -22,6 +21,7 @@ export default function Picking({ disabled }: PickingProps) {
       setFPlayer(null);
     });
   }, []);
+  if (disabled) return false;
 
   const handleSearch = async (query: any) => {
     try {
@@ -38,7 +38,7 @@ export default function Picking({ disabled }: PickingProps) {
       console.log(parsedData);
 
       // Filter the data based on the search query and update the 'results' state
-      const filteredResults = parsedData.data
+      const filteredResults: any = parsedData.data
         .filter((player: any) => {
           if (player.name)
             return player.name.toLowerCase().includes(query.toLowerCase());
