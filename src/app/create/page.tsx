@@ -11,6 +11,7 @@ export default function Join() {
   const router = useRouter();
   const { toast } = useToast();
   function handleCreate() {
+    console.log(socket);
     if (!socket.connected) socket.connect();
     socket.emit("create", name);
     socket.on("err", (err) => {
