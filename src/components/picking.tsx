@@ -11,10 +11,17 @@ interface PickingProps {
 }
 
 export default function Picking({ disabled }: PickingProps) {
-  const [fplayer, setFPlayer] = useState(null);
+  if (disabled) return false;
+  const [fplayer, setFPlayer]: [any, any] = useState(null);
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState("");
-  if (disabled) return false;
+
+  useEffect(() => {
+    if (!socket.connected) socket.connect();
+    socket.on("reset-picking", (data) => {
+      setFPlayer(null);
+    });
+  }, []);
 
   const handleSearch = async (query: any) => {
     try {
@@ -50,11 +57,12 @@ export default function Picking({ disabled }: PickingProps) {
     handleSearch(value);
   }, 300);
 
-  function handleClick() {
+  function handleClick(p: any) {
     if (!socket.connected) socket.connect();
+    console.log(p);
     socket.emit("packet", {
       cmd: "submit-player",
-      data: fplayer,
+      data: p,
     });
   }
 
@@ -76,8 +84,8 @@ export default function Picking({ disabled }: PickingProps) {
               <li
                 key={player.player_id}
                 onClick={() => {
+                  handleClick(player);
                   setFPlayer(player.name);
-                  handleClick();
                 }}
               >
                 {player.name}

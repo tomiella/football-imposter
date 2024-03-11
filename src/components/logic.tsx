@@ -7,12 +7,14 @@ import InGame from "./inGame";
 
 interface LogicProps {
   players: string;
+  isOwner: boolean;
 }
 
-export default function Logic({ players }: LogicProps) {
+export default function Logic({ players, isOwner }: LogicProps) {
   const [gameRunning, setGameRunning] = useState(false);
   const [state, setState] = useState("init");
   const [status, setStatus]: [string[], any] = useState([]);
+  console.log(gameRunning);
 
   useEffect(() => {
     if (!socket.connected) socket.connect();
@@ -31,20 +33,26 @@ export default function Logic({ players }: LogicProps) {
     });
   }, []);
   let list: any = [];
-  players
-    .split(" | ")[1]
-    .split(" ")
-    .forEach((player, _idx) => {
-      if (player != "") {
-        let bg = "rounded-md border px-2 py-1 font-mono text-sm bg-red-400";
-        if (status.includes(player))
-          bg = "rounded-md border px-2 py-1 font-mono text-sm bg-green-400";
-        else bg = "rounded-md border px-2 py-1 font-mono text-sm bg-red-400";
-        list.push(<div className={bg}>{player}</div>);
-        list.push(<Separator orientation="vertical" />);
-      }
-    });
-  list.pop();
+  if (players.split(" | ")[1] != undefined) {
+    players
+      .split(" | ")[1]
+      .split(" ")
+      .forEach((player, _idx) => {
+        if (player != "") {
+          let bg = "rounded-md border px-2 py-1 font-mono text-sm bg-red-400";
+          if (status.includes(player))
+            bg = "rounded-md border px-2 py-1 font-mono text-sm bg-green-400";
+          else bg = "rounded-md border px-2 py-1 font-mono text-sm bg-red-400";
+          list.push(
+            <div key={player} className={bg}>
+              {player}
+            </div>,
+          );
+          list.push(<Separator key={player + "Sep"} orientation="vertical" />);
+        }
+      });
+    list.pop();
+  }
 
   return (
     <div className="flex-row">
@@ -54,6 +62,7 @@ export default function Logic({ players }: LogicProps) {
       <BeforeGame
         disabled={gameRunning ? true : false}
         players={players}
+        isOwner={isOwner}
         changeGameRunning={(b: boolean) => {
           setGameRunning(b);
           socket.emit("packet", {

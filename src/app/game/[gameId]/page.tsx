@@ -12,6 +12,7 @@ export default function Game() {
   const [players, setPlayers] = useState("");
   const [status, setStatus] = useState("");
   const { toast } = useToast();
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     if (!socket.connected) socket.connect();
@@ -25,6 +26,7 @@ export default function Game() {
     });
 
     socket.on("size", (size) => setPlayers(size));
+    socket.on("owner", (data) => setIsOwner(data));
 
     socket.emit("check", gameId);
   }, []);
@@ -48,7 +50,7 @@ export default function Game() {
               Game: {gameId} - Players: {players.split(" | ")[0]}{" "}
             </p>
           </a>
-          <Logic players={players} />
+          <Logic players={players} isOwner={isOwner} />
         </div>
       ) : (
         <div className="mb-32 grid text-center">

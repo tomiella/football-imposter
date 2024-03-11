@@ -13,6 +13,7 @@ interface InGameProps {
 
 export default function InGame({ disabled, players, state }: InGameProps) {
   if (disabled) return false;
+  console.log(state);
 
   return (
     <div className="grid grid-flow-row gap-10 pt-12">

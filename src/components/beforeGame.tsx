@@ -4,12 +4,14 @@ import { Loader2 } from "lucide-react";
 interface BeforeGameProps {
   disabled: boolean;
   players: string;
+  isOwner: boolean;
   changeGameRunning: Function;
 }
 
 export default function BeforeGame({
   disabled,
   players,
+  isOwner,
   changeGameRunning,
 }: BeforeGameProps) {
   if (disabled) return false;
@@ -27,6 +29,7 @@ export default function BeforeGame({
         <div>
           <h1>Enough players to start</h1>
           <Button
+            disabled={!isOwner}
             onClick={() => {
               changeGameRunning(true);
             }}
