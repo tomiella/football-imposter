@@ -14,7 +14,7 @@ export default function BeforeGame({
 }: BeforeGameProps) {
   if (disabled) return false;
   return (
-    <div>
+    <div className="py-12">
       {parseInt(players.charAt(0)) < 1 ? (
         <div>
           <h1>Need 3 players to start game</h1>
